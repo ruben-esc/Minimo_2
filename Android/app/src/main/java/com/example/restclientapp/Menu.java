@@ -54,6 +54,14 @@ public class Menu extends AppCompatActivity {
                 // Queremos que si el usuario da al botón "Atrás" en la tienda,
                 // vuelva a este Menú, no se salga de la app.
             });
+
+            Button btnGroups = findViewById(R.id.btnGroups);
+
+            btnGroups.setOnClickListener(v -> {
+                        Intent intent = new Intent(Menu.this, GroupsActivity.class);
+                        startActivity(intent);});
+        } else {
+            finish();
         }
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {

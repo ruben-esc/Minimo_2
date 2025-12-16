@@ -3,6 +3,8 @@ package com.example.restclientapp.api;
 import com.example.restclientapp.model.UserLoginRequest;
 import com.example.restclientapp.model.LoginResponse;
 import com.example.restclientapp.model.User;
+import com.example.restclientapp.model.Group;
+import com.example.restclientapp.model.JoinGroupRequest;
 import com.example.restclientapp.model.Verificacion;
 import com.example.restclientapp.model.ObjetoCompra;
 import com.example.restclientapp.model.Producto;
@@ -37,4 +39,11 @@ public interface AuthService {
 
     @retrofit2.http.PUT("usuarios/monedas/{email}/{cantidad}")
     Call<Void> updateMonedas(@retrofit2.http.Path("email") String email, @retrofit2.http.Path("cantidad") int cantidad);
+
+    //Nuevas llamadas para el mínimo 2
+    @GET("usuarios/groups")
+    Call<List<Group>> getGroups();
+
+    @POST("usuarios/groups/join")
+    Call<Void> joinGroup(@Body JoinGroupRequest request);
 }
