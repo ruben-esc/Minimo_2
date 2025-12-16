@@ -1,0 +1,12 @@
+# Archivos compilados de Java y Maven
+target/
+*.class
+
+# Archivos de configuración de IntelliJ (opcional, pero recomendado para no molestar al compañero)
+.idea/
+*.iml
+*.iws
+
+# Archivos del sistema operativo (basura de Mac/Windows)
+.DS_Store
+Thumbs.db
