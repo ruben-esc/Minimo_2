@@ -3,8 +3,12 @@ package edu.upc.dsa.services;
 import edu.upc.dsa.UserManager;
 import edu.upc.dsa.UserManagerImpl;
 import edu.upc.dsa.modelos.User;
+import edu.upc.dsa.modelos.Group;
+import edu.upc.dsa.modelos.JoinGroupRequest;
 import edu.upc.dsa.modelos.Verificacion;
 import io.swagger.annotations.*;
+
+import java.util.List;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -36,14 +40,14 @@ public class Servicio {
             }
 
             //Campos vacíos (" ")
-            if(u.getEmail().trim().isEmpty() || u.getPassword().trim().isEmpty()){
+            if (u.getEmail().trim().isEmpty() || u.getPassword().trim().isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("Los campos obligatorios no pueden estar vacíos.").build();
             }
 
             //Formato del Email
             String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-            if(!u.getEmail().matches(EMAIL_REGEX)){
+            if (!u.getEmail().matches(EMAIL_REGEX)) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("El formato del email no es válido.").build();
             }
@@ -70,6 +74,7 @@ public class Servicio {
                     .entity("Error interno del servidor: " + e.getMessage()).build();
         }
     }
+
     @POST
     @Path("/verificar-codigo")
     @Produces(MediaType.APPLICATION_JSON)
@@ -210,6 +215,41 @@ public class Servicio {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Error interno: " + e.getMessage()).build();
+        }
+    }
+
+    //Rutas para el mínimo 2:
+    //Obtener lista de grupos
+    @GET
+    @Path("/groups")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getGroups() {
+        List<Group> grupos = m.getGroups(); // m es tu UserManager
+        return Response.status(200).entity(grupos).build();
+    }
+
+    //Unirse a un grupo
+    @POST
+    @Path("/groups/join")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response joinGroup(JoinGroupRequest request) {
+        if (request == null || request.getEmail() == null || request.getGroupId() == null) {
+            return Response.status(400).entity("Faltan datos").build();
+        }
+
+        int res = m.addUserToGroup(request.getEmail(), request.getGroupId());
+
+        if (res == 0) {
+            return Response.status(200).entity("Usuario añadido al grupo").build();
+        } else if (res == 1) {
+            return Response.status(404).entity("Usuario no encontrado").build();
+        } else if (res == 2) {
+            return Response.status(404).entity("Grupo no encontrado").build();
+        } else if (res == 3) {
+            return Response.status(409).entity("El usuario ya pertenece a un grupo").build();
+        } else {
+            return Response.status(500).entity("Error interno").build();
         }
     }
 }

@@ -1,14 +1,21 @@
 package edu.upc.dsa;
 
 import edu.upc.dsa.modelos.User;
+import edu.upc.dsa.modelos.Group;
 import java.util.*;
 
 public class UserManagerImpl implements UserManager {
     private static UserManagerImpl instance;
     private List<User> usuarios;
+    private List<Group> groups;
 
     private UserManagerImpl() {
         usuarios = new ArrayList<>();
+        groups = new LinkedList<>();
+
+        this.addGroup("Grupo de Prueba 1", "Confirmación de que funciona");
+        this.addGroup("Grupo de Prueba 2", "Este también funciona");
+
     }
 
     public static UserManagerImpl getInstance() {
@@ -79,6 +86,7 @@ public class UserManagerImpl implements UserManager {
 
         return true;
     }
+
     public boolean verificarCodigo(String email, String codigo) {
         User user = this.getUsuario(email);
 
@@ -95,5 +103,43 @@ public class UserManagerImpl implements UserManager {
 
         System.out.println("Código incorrecto para: " + email);
         return false;
+    }
+
+    //Implementación actualizada para el mínimo 2:
+
+    @Override
+    public List<Group> getGroups() {
+        return this.groups;
+    }
+
+    @Override
+    public Group addGroup(String nombre, String descripcion) {
+        String id = UUID.randomUUID().toString();
+        Group g = new Group(id, nombre, descripcion);
+        this.groups.add(g);
+        return g;
+    }
+
+    @Override
+    public int addUserToGroup(String email, String groupId) {
+        User u = this.getUsuario(email);
+        if (u == null) return 1; // Error: Usuario no encontrado
+
+        if (u.getGrupos() != null && !u.getGrupos().isEmpty()) {
+            return 3; // Error: El usuario ya tiene grupo
+        }
+
+        Group targetGroup = null;
+        for(Group g : this.groups) {
+            if(g.getId().equals(groupId)) {
+                targetGroup = g;
+                break;
+            }
+        }
+
+        if (targetGroup == null) return 2; // Error: Grupo no existe
+
+        u.addGrupo(targetGroup.getId());
+        return 0; // Éxito
     }
 }

@@ -1,6 +1,9 @@
 package edu.upc.dsa.modelos;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+
 
 public class User {
     private String id;
@@ -11,9 +14,12 @@ public class User {
     private boolean emailVerificado;
     private String codigoVerificacion;
     private HashMap<String, Integer> inventario;
+    private List<String> grupos;
 
     public User() {
+
         this.inventario = new HashMap<>();
+        this.grupos = new ArrayList<>();
     }
 
     public User(String id, String nombre, String email, String password) {
@@ -24,6 +30,7 @@ public class User {
         this.monedas = 0;
         this.emailVerificado = false;
         this.inventario = new HashMap<>();
+        this.grupos = new ArrayList<>();
     }
 
     public HashMap<String, Integer> getInventario() {
@@ -92,13 +99,24 @@ public class User {
         this.codigoVerificacion = codigoVerificacion;
     }
 
-
     public int getMonedas() {
         return monedas;
     }
 
     public void setMonedas(int monedas) {
         this.monedas = monedas;
+    }
+
+    public List<String> getGrupos() {return grupos;}
+
+    public void setGrupos(List<String> grupos) {
+        this.grupos = grupos;
+    }
+
+    public void addGrupo(String groupId) {
+        if (!this.grupos.contains(groupId)) {
+            this.grupos.add(groupId);
+        }
     }
 }
 
